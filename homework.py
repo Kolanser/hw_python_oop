@@ -29,6 +29,7 @@ class Training:
     
     LEN_STEP = 0.65
     M_IN_KM = 1000
+    MIN_IN_HOUR = 60
 
     def __init__(self,
                  action: int,
@@ -59,27 +60,23 @@ class Training:
         distance: float = self.get_distance()
         speed: float = self.get_mean_speed()
         calories: float = self.get_spent_calories()
-        obj_Info = InfoMessage(training_type, 
-                               duration, 
-                               distance, 
-                               speed, 
-                               calories
-                               )
-        return obj_Info
-
+        return InfoMessage(training_type, 
+                           duration, 
+                           distance, 
+                           speed, 
+                           calories
+                           )
+         
         
 class Running(Training):
     """Тренировка: бег."""
-
-    LEN_STEP = 0.65
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий при беге."""
         COEF_MULTIPLE = 18
         COEF_MINUS = 20
         mean_speed = super().get_mean_speed()
-        MIN_IN_HOUR = 60
-        duration_minute = self.duration * MIN_IN_HOUR
+        duration_minute = self.duration * self.MIN_IN_HOUR
         return ((COEF_MULTIPLE * mean_speed - COEF_MINUS)
                 * self.weight
                 / super().M_IN_KM * duration_minute
@@ -88,8 +85,6 @@ class Running(Training):
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-
-    LEN_STEP = 1.38
 
     def __init__(self,
                  action: int,
@@ -104,9 +99,8 @@ class SportsWalking(Training):
         """Получить количество затраченных калорий при спортивной ходьбе."""
         COEF_WEIGHT = 0.035
         COEF_WEIGHT_SPEED = 0.029
-        mean_speed = super().get_mean_speed()
-        MIN_IN_HOUR = 60
-        duration_minute = self.duration * MIN_IN_HOUR
+        mean_speed = self.get_mean_speed()
+        duration_minute = self.duration * self.MIN_IN_HOUR
         return ((COEF_WEIGHT * self.weight
                 + (mean_speed ** 2 // self.height)
                 * COEF_WEIGHT_SPEED * self.weight)
