@@ -1,7 +1,28 @@
 class InfoMessage:
     """Информационное сообщение о тренировке."""
-    pass
 
+    def __init__(self,
+                 training_type: str,
+                 duration: float,
+                 distance: float,
+                 speed: float,
+                 calories: float
+                 ) -> None:
+        self.training_type = training_type
+        self.duration = duration
+        self.distance = distance
+        self.speed = speed
+        self.calories = calories
+
+    def get_message(self) -> str:
+        """Получить строку сообщения"""
+        return (f'Тип тренировки: {self.training_type}; '
+                f'Длительность: {round(self.duration, 3)} ч.; '
+                f'Дистанция: {round(self.distance, 3)} км; '
+                f'Ср. скорость: {round(self.speed, 3)} км/ч; '
+                f'Потрачено ккал: {round(self.calories, 3)}.'
+                )
+            
 
 class Training:
     """Базовый класс тренировки."""
@@ -33,9 +54,20 @@ class Training:
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        pass
+        training_type: str = self.__class__.__name__
+        duration: float = self.duration
+        distance: float = self.get_distance()
+        speed: float = self.get_mean_speed()
+        calories: float = self.get_spent_calories()
+        obj_Info = InfoMessage(training_type, 
+                               duration, 
+                               distance, 
+                               speed, 
+                               calories
+                               )
+        return obj_Info
 
-
+        
 class Running(Training):
     """Тренировка: бег."""
 
@@ -68,6 +100,7 @@ class SportsWalking(Training):
         self.height = height
         
     def get_spent_calories(self) -> float:
+        """Получить количество затраченных калорий при спортивной ходьбе."""
         COEF_WEIGHT = 0.035
         COEF_WEIGHT_SPEED = 0.029
         mean_speed = super().get_mean_speed()
@@ -97,10 +130,10 @@ class Swimming(Training):
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения при плавании."""
         training_distance: float = self.length_pool * self.count_pool
-        return training_distance / self.duration
+        return training_distance / self.M_IN_KM / self.duration
 
     def get_spent_calories(self) -> float:
-        # (средняя_скорость + 1.1) * 2 * вес #
+        """Получить количество затраченных калорий при плаваниии."""
         COEF_ADDITIONAL = 1.1
         COEF_MULTIPL = 2
         mean_speed = self.get_mean_speed()
@@ -109,12 +142,16 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    pass
-
+    dict_tarining = {'SWM': Swimming,
+                     'RUN': Running,
+                     'WLK': SportsWalking}
+    return dict_tarining[workout_type](*data)
+    
 
 def main(training: Training) -> None:
     """Главная функция."""
-    pass
+    info = training.show_training_info()
+    print(info.get_message())
 
 
 if __name__ == '__main__':
