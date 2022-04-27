@@ -17,10 +17,10 @@ class InfoMessage:
     def get_message(self) -> str:
         """Получить строку сообщения"""
         return (f'Тип тренировки: {self.training_type}; '
-                f'Длительность: {round(self.duration, 3)} ч.; '
-                f'Дистанция: {round(self.distance, 3)} км; '
-                f'Ср. скорость: {round(self.speed, 3)} км/ч; '
-                f'Потрачено ккал: {round(self.calories, 3)}.'
+                f'Длительность: {self.duration:.3f} ч.; '
+                f'Дистанция: {self.distance:.3f} км; '
+                f'Ср. скорость: {self.speed:.3f} км/ч; '
+                f'Потрачено ккал: {self.calories:.3f}.'
                 )
             
 
@@ -81,6 +81,7 @@ class Running(Training):
         MIN_IN_HOUR = 60
         duration_minute = self.duration * MIN_IN_HOUR
         return ((COEF_MULTIPLE * mean_speed - COEF_MINUS)
+                * self.weight
                 / super().M_IN_KM * duration_minute
                 )
 
@@ -107,7 +108,7 @@ class SportsWalking(Training):
         MIN_IN_HOUR = 60
         duration_minute = self.duration * MIN_IN_HOUR
         return ((COEF_WEIGHT * self.weight
-                + (mean_speed * mean_speed / self.height)
+                + (mean_speed ** 2 // self.height)
                 * COEF_WEIGHT_SPEED * self.weight)
                 * duration_minute
                 )
@@ -116,6 +117,8 @@ class SportsWalking(Training):
 class Swimming(Training):
     """Тренировка: плавание."""
     
+    LEN_STEP = 1.38
+
     def __init__(self,
                  action: int,
                  duration: float,
