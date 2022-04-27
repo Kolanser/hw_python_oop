@@ -22,11 +22,11 @@ class InfoMessage:
                 f'Ср. скорость: {self.speed:.3f} км/ч; '
                 f'Потрачено ккал: {self.calories:.3f}.'
                 )
-            
+
 
 class Training:
     """Базовый класс тренировки."""
-    
+
     LEN_STEP = 0.65
     M_IN_KM = 1000
     MIN_IN_HOUR = 60
@@ -43,12 +43,12 @@ class Training:
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
         return self.action * self.LEN_STEP / self.M_IN_KM
-        
+
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
         training_distance: float = self.get_distance()
         return training_distance / self.duration
-                
+
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         pass
@@ -60,14 +60,14 @@ class Training:
         distance: float = self.get_distance()
         speed: float = self.get_mean_speed()
         calories: float = self.get_spent_calories()
-        return InfoMessage(training_type, 
-                           duration, 
-                           distance, 
-                           speed, 
+        return InfoMessage(training_type,
+                           duration,
+                           distance,
+                           speed,
                            calories
                            )
-         
-        
+
+
 class Running(Training):
     """Тренировка: бег."""
 
@@ -94,7 +94,7 @@ class SportsWalking(Training):
                  ) -> None:
         super().__init__(action, duration, weight)
         self.height = height
-        
+
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий при спортивной ходьбе."""
         COEF_WEIGHT = 0.035
@@ -106,11 +106,11 @@ class SportsWalking(Training):
                 * COEF_WEIGHT_SPEED * self.weight)
                 * duration_minute
                 )
-                 
- 
+
+
 class Swimming(Training):
     """Тренировка: плавание."""
-    
+
     LEN_STEP = 1.38
 
     def __init__(self,
@@ -143,7 +143,7 @@ def read_package(workout_type: str, data: list) -> Training:
                      'RUN': Running,
                      'WLK': SportsWalking}
     return dict_tarining[workout_type](*data)
-    
+
 
 def main(training: Training) -> None:
     """Главная функция."""
