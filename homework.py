@@ -108,9 +108,9 @@ class SportsWalking(Training):
 class Swimming(Training):
     """Тренировка: плавание."""
 
-    LEN_STEP = 1.38
-    COEF_ADDITIONAL = 1.1
-    COEF_MULTIPL = 2
+    LEN_STEP: float = 1.38
+    COEF_ADDITIONAL: float = 1.1
+    COEF_MULTIPL: int = 2
 
     def __init__(self,
                  action: int,
@@ -145,10 +145,9 @@ def read_package(workout_type: str, data: List[Union[int, float]]) -> Training:
         'RUN': Running,
         'WLK': SportsWalking
     }
-    if workout_type in code_and_class:
-        return code_and_class[workout_type](*data)
-    else:
+    if workout_type not in code_and_class:
         raise KeyError(f'Неустановленный код тренировки: {workout_type}')
+    return code_and_class[workout_type](*data)
 
 
 def main(training: Training) -> None:
